@@ -13,7 +13,7 @@ const inputElement = document.querySelector(".to-do__input");
 
 function loadInitialTasks() {
   const savedTasks = localStorage.getItem('items');
-  return savedTasks ? JSON.parse(savedTasks) : items;
+  return savedTasks ? JSON.parse(savedTasks) : [...items];
 }
 
 function createTaskElement(taskText) {
@@ -31,7 +31,7 @@ function createTaskElement(taskText) {
   });
 
   duplicateButton.addEventListener('click', () => {
-    duplicateTask(taskText);
+    duplicateTask(taskTextElement);
   });
 
   editButton.addEventListener('click', () => {
@@ -57,8 +57,9 @@ function removeTask(taskElement) {
   updateStoredTasks();
 }
 
-function duplicateTask(taskText) {
-  const newTaskElement = createTaskElement(taskText);
+function duplicateTask(taskTextElement) {
+  const currentText = taskTextElement.textContent;
+  const newTaskElement = createTaskElement(currentText);
   listElement.prepend(newTaskElement);
   updateStoredTasks();
 }
@@ -99,9 +100,11 @@ function addNewTask(taskText) {
 }
 
 function renderAllTasks() {
-  items = loadInitialTasks();
-  items.forEach(task => {
-    listElement.append(createTaskElement(task));
+  listElement.innerHTML = '';
+  const tasksToRender = loadInitialTasks();
+  tasksToRender.forEach(task => {
+    const newTaskElement = createTaskElement(task);
+    listElement.prepend(newTaskElement);
   });
 }
 
